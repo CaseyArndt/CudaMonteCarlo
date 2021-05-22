@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <cud
 #include <helper_functions.h>
 #include <helper_cuda.h>
 #include <helper_image.h>
