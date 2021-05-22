@@ -2,12 +2,17 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <helper_functions.h>
-#include <helper_cuda.h>
-#include <helper_image.h>
-#include <helper_string.h>
-#include <helper_timer.h>
-#include <exception.h>
+
+// CUDA runtime
+#include <cuda_runtime.h>
+
+// Helper functions and utilities to work with CUDA
+#include "helper_functions.h"
+#include "helper_cuda.h"
+#include "helper_image.h"
+#include "helper_string.h"
+#include "helper_timer.h"
+#include "exception.h"
 
 // setting the number of trials in the monte carlo simulation:
 #ifndef NUMTRIALS
