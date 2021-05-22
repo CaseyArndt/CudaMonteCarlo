@@ -230,7 +230,7 @@ main( int argc, char* argv[ ] )
         // compute and print the probability:
 
         double probability = totalHits / NUMTRIALS;
-        fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
+        fprintf(stdout, "Trials = %d, Hits = %d\n", NUMTRIALS, numHits);
 
         // clean up host memory:
         delete [ ] hvs;
