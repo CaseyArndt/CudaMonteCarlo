@@ -43,6 +43,7 @@ const float TOL = 5.0;		// tolerance in cannonball hitting the castle in meters
 
 
 // function prototypes
+void        CudaCheckError( );
 float		Ranf( float, float );
 void        TimeOfDaySeed( );
 
@@ -133,6 +134,8 @@ int
 main( int argc, char* argv[ ] )
 {
         TimeOfDaySeed( );
+
+        int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
 
         int dev = findCudaDevice(argc, (const char **)argv);
 
@@ -226,7 +229,7 @@ main( int argc, char* argv[ ] )
 
         // compute and print the probability:
 
-        probability = totalHits / NUMTRIALS;
+        double probability = totalHits / NUMTRIALS;
         fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
 
         // clean up host memory:
