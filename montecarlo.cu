@@ -79,7 +79,7 @@ MonteCarlo( float *dvs, float *dths, float *dgs, float *dhs, float *dds, int *dh
         if( x > g )
         {
 	        t = g / vx;
-			float y = (vy * t) + (0.5 * GRAVITY * (t * t);
+			float y = (vy * t) + (0.5 * GRAVITY * (t * t));
 
             // see if ball hits the vertical cliff face
             if ( y > h )
