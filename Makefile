@@ -4,3 +4,4 @@ CUDA_NVCC	=	$(CUDA_BIN_PATH)/nvcc
 
 montecarlo:	montecarlo.cu
 		$(CUDA_NVCC) -o montecarlo  montecarlo.cu
+		
