@@ -147,11 +147,11 @@ main( int argc, char* argv[ ] )
         // fill the random-value arrays:
         for( int n = 0; n < NUMTRIALS; n++ )
         {
-            vs[n]  = Ranf(  VMIN,  VMAX );
-            ths[n] = Ranf( THMIN, THMAX );
-            gs[n]  = Ranf(  GMIN,  GMAX );
-            hs[n]  = Ranf(  HMIN,  HMAX );
-            ds[n]  = Ranf(  DMIN,  DMAX );
+            hvs[n]  = Ranf(  VMIN,  VMAX );
+            hths[n] = Ranf( THMIN, THMAX );
+            hgs[n]  = Ranf(  GMIN,  GMAX );
+            hhs[n]  = Ranf(  HMIN,  HMAX );
+            hds[n]  = Ranf(  DMIN,  DMAX );
         }
 
 
