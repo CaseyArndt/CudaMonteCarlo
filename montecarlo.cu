@@ -213,7 +213,7 @@ main( int argc, char* argv[ ] )
         CudaCheckError( );
 
         // compute and print the performance
-
+        fprintf(stdout, "msecTotal = %lf 6.2lf\n", msecTotal);
 
 
         // copy result from the device to the host:
@@ -230,7 +230,7 @@ main( int argc, char* argv[ ] )
         // compute and print the probability:
 
         double probability = ( float ) totalHits / (float) NUMTRIALS;
-        fprintf(stdout, "Hits = %6.2lf\n", 100*probability);
+        fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
 
         // clean up host memory:
         delete [ ] hvs;
