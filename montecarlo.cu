@@ -141,8 +141,8 @@ main( int argc, char* argv[ ] )
     }
     int BLOCKSIZE = argv[1];
     int NUMTRIALS = argv[2];
-    int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
     */
+    int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
 
     TimeOfDaySeed( );
 
