@@ -213,7 +213,9 @@ main( int argc, char* argv[ ] )
         CudaCheckError( );
 
         // compute and print the performance
-        fprintf(stdout, "msecTotal = %lf 6.2lf\n", msecTotal);
+        //fprintf(stdout, "msecTotal = %6.2lf\n", msecTotal);
+        double megaTrialsPerSecond = (double) NUMTRIALS / (double) msecTotal / 1000;
+        fprintf(stdout, "Performance = %6.2lf megaTrialsPerSecond/n", megaTrialsPerSecond);
 
 
         // copy result from the device to the host:
