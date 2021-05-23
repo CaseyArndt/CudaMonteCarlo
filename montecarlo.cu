@@ -220,9 +220,7 @@ main( int argc, char* argv[ ] )
     CudaCheckError( );
 
     // compute and print the performance
-    //fprintf(stdout, "msecTotal = %6.2lf\n", msecTotal);
     double megaTrialsPerSecond = (double) NUMTRIALS / (double) msecTotal / 1000;
-    fprintf(stdout, "Performance = %6.2lf megaTrialsPerSecond\n", megaTrialsPerSecond);
 
 
     // copy result from the device to the host:
@@ -239,7 +237,7 @@ main( int argc, char* argv[ ] )
     // compute and print the probability:
 
     double probability = ( float ) totalHits / (float) NUMTRIALS;
-    fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
+    fprintf(stdout, "BLOCKSIZE = %d, NUMTRIALS = %d, Performance = %6.2lf megaTrialsPerSecond, Probability = %6.2lf\n", BLOCKSIZE, NUMTRIALS, megaTrialsPerSecond, 100*probability);
 
     // clean up host memory:
     delete [ ] hvs;
