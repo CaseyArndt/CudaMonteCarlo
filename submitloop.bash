@@ -5,8 +5,6 @@
 #SBATCH --gres=gpu:1
 #SBATCH -o montecarlo.out
 #SBATCH -e montecarlo.err
-#SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=arndtca@oregonstate.edu
 echo -e "1, 2, 4, 8, 16, 32, 64, 128\n"
 for i in 1 2 4 8 16 32 64 128
 do
