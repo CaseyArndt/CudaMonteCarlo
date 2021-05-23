@@ -15,14 +15,14 @@
 #include "exception.h"
 
 // setting the number of trials in the monte carlo simulation:
-#ifndef NUMTRIALS
-#define NUMTRIALS	2048
-#endif
+//#ifndef NUMTRIALS
+//#define NUMTRIALS	2048
+//#endif
 
 // setting the number of trials in the monte carlo simulation:
-#ifndef BLOCKSIZE
-#define BLOCKSIZE	32
-#endif
+//#ifndef BLOCKSIZE
+//#define BLOCKSIZE	32
+//#endif
 
 
 // ranges for the random numbers:
@@ -133,123 +133,130 @@ MonteCarlo( float *dvs, float *dths, float *dgs, float *dhs, float *dds, int *dh
 int
 main( int argc, char* argv[ ] )
 {
-        TimeOfDaySeed( );
+    if ( argc < 3 )
+    {
+        fprintf(stdout, "Improper Argument Count. Run as ./montecarlo {BLOCKSIZE} {NUMTRIALS}\n");
+        exit(1);
+    }
+    int BLOCKSIZE = argv[1];
+    int NUMTRIALS = argv[2];
+    int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
 
-        int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
+    TimeOfDaySeed( );
 
-        int dev = findCudaDevice(argc, (const char **)argv);
+    int dev = findCudaDevice(argc, (const char **)argv);
 
-        // better to define these here so that the rand() calls don't get into the thread timing:
-        float *hvs   = new float [NUMTRIALS];
-        float *hths  = new float [NUMTRIALS];
-        float *hgs   = new float [NUMTRIALS];
-        float *hhs   = new float [NUMTRIALS];
-        float *hds   = new float [NUMTRIALS];
-        int   *hhits = new int   [NUMTRIALS];
+    // better to define these here so that the rand() calls don't get into the thread timing:
+    float *hvs   = new float [NUMTRIALS];
+    float *hths  = new float [NUMTRIALS];
+    float *hgs   = new float [NUMTRIALS];
+    float *hhs   = new float [NUMTRIALS];
+    float *hds   = new float [NUMTRIALS];
+    int   *hhits = new int   [NUMTRIALS];
 
-        // fill the random-value arrays:
-        for( int n = 0; n < NUMTRIALS; n++ )
-        {
-            hvs[n]  = Ranf(  VMIN,  VMAX );
-            hths[n] = Ranf( THMIN, THMAX );
-            hgs[n]  = Ranf(  GMIN,  GMAX );
-            hhs[n]  = Ranf(  HMIN,  HMAX );
-            hds[n]  = Ranf(  DMIN,  DMAX );
-        }
-
-
-
-        // allocate device memory:
-        float *dvs, *dths, *dgs, *dhs, *dds;
-        int   *dhits;
-
-        cudaMalloc( &dvs,   NUMTRIALS*sizeof(float) );
-        cudaMalloc( &dths,  NUMTRIALS*sizeof(float) );
-        cudaMalloc( &dgs,   NUMTRIALS*sizeof(float) );
-        cudaMalloc( &dhs,   NUMTRIALS*sizeof(float) );
-        cudaMalloc( &dds,   NUMTRIALS*sizeof(float) );
-        cudaMalloc( &dhits, NUMTRIALS*sizeof(int) );
-        CudaCheckError( );
-
-        // copy host memory to the device:
-        cudaMemcpy( dvs,  hvs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-        cudaMemcpy( dths, hths, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-        cudaMemcpy( dgs,  hgs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-        cudaMemcpy( dhs,  hhs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-        cudaMemcpy( dds,  hds,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
-        CudaCheckError( );
-
-        // setup the execution parameters:
-        dim3 grid( NUMBLOCKS, 1, 1 );
-        dim3 threads( BLOCKSIZE, 1, 1 );
-
-        // allocate cuda events that we'll use for timing:
-        cudaEvent_t start, stop;
-        cudaEventCreate( &start );
-        cudaEventCreate( &stop  );
-        CudaCheckError( );
-
-        // let the gpu go quiet:
-        cudaDeviceSynchronize( );
-
-        // record the start event:
-        cudaEventRecord( start, NULL );
-        CudaCheckError( );
-
-        // execute the kernel:
-        MonteCarlo<<< grid, threads >>>( IN dvs, IN dths, IN dgs, IN dhs, IN dds,   OUT dhits );
-
-        // record the stop event:
-        cudaEventRecord( stop, NULL );
-        CudaCheckError( );
-
-        // wait for the stop event to complete:
-        cudaDeviceSynchronize( );
-        cudaEventSynchronize( stop );
-        CudaCheckError( );
-
-        float msecTotal = 0.0f;
-        cudaEventElapsedTime( &msecTotal, start, stop );
-        CudaCheckError( );
-
-        // compute and print the performance
-        //fprintf(stdout, "msecTotal = %6.2lf\n", msecTotal);
-        double megaTrialsPerSecond = (double) NUMTRIALS / (double) msecTotal / 1000;
-        fprintf(stdout, "Performance = %6.2lf megaTrialsPerSecond/n", megaTrialsPerSecond);
+    // fill the random-value arrays:
+    for( int n = 0; n < NUMTRIALS; n++ )
+    {
+        hvs[n]  = Ranf(  VMIN,  VMAX );
+        hths[n] = Ranf( THMIN, THMAX );
+        hgs[n]  = Ranf(  GMIN,  GMAX );
+        hhs[n]  = Ranf(  HMIN,  HMAX );
+        hds[n]  = Ranf(  DMIN,  DMAX );
+    }
 
 
-        // copy result from the device to the host:
-        cudaMemcpy( hhits, dhits, NUMTRIALS*sizeof(int), cudaMemcpyDeviceToHost );
-        CudaCheckError( );
 
-        // add up the hhits[ ] array: :
-        int totalHits = 0;
-        for (int i = 0; i < NUMTRIALS; i++ )
-        {
-            totalHits += hhits[i];
-        }
+    // allocate device memory:
+    float *dvs, *dths, *dgs, *dhs, *dds;
+    int   *dhits;
 
-        // compute and print the probability:
+    cudaMalloc( &dvs,   NUMTRIALS*sizeof(float) );
+    cudaMalloc( &dths,  NUMTRIALS*sizeof(float) );
+    cudaMalloc( &dgs,   NUMTRIALS*sizeof(float) );
+    cudaMalloc( &dhs,   NUMTRIALS*sizeof(float) );
+    cudaMalloc( &dds,   NUMTRIALS*sizeof(float) );
+    cudaMalloc( &dhits, NUMTRIALS*sizeof(int) );
+    CudaCheckError( );
 
-        double probability = ( float ) totalHits / (float) NUMTRIALS;
-        fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
+    // copy host memory to the device:
+    cudaMemcpy( dvs,  hvs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dths, hths, NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dgs,  hgs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dhs,  hhs,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+    cudaMemcpy( dds,  hds,  NUMTRIALS*sizeof(float), cudaMemcpyHostToDevice );
+    CudaCheckError( );
 
-        // clean up host memory:
-        delete [ ] hvs;
-        delete [ ] hths;
-        delete [ ] hgs;
-        delete [ ] hhs;
-        delete [ ] hds;
-        delete [ ] hhits;
+    // setup the execution parameters:
+    dim3 grid( NUMBLOCKS, 1, 1 );
+    dim3 threads( BLOCKSIZE, 1, 1 );
 
-        // clean up device memory:
-        cudaFree( dvs );
-        cudaFree( dths );
-        cudaFree( dgs );
-        cudaFree( dhs );
-        cudaFree( dds );
-        cudaFree( dhits );
-        CudaCheckError( );
+    // allocate cuda events that we'll use for timing:
+    cudaEvent_t start, stop;
+    cudaEventCreate( &start );
+    cudaEventCreate( &stop  );
+    CudaCheckError( );
+
+    // let the gpu go quiet:
+    cudaDeviceSynchronize( );
+
+    // record the start event:
+    cudaEventRecord( start, NULL );
+    CudaCheckError( );
+
+    // execute the kernel:
+    MonteCarlo<<< grid, threads >>>( IN dvs, IN dths, IN dgs, IN dhs, IN dds,   OUT dhits );
+
+    // record the stop event:
+    cudaEventRecord( stop, NULL );
+    CudaCheckError( );
+
+    // wait for the stop event to complete:
+    cudaDeviceSynchronize( );
+    cudaEventSynchronize( stop );
+    CudaCheckError( );
+
+    float msecTotal = 0.0f;
+    cudaEventElapsedTime( &msecTotal, start, stop );
+    CudaCheckError( );
+
+    // compute and print the performance
+    //fprintf(stdout, "msecTotal = %6.2lf\n", msecTotal);
+    double megaTrialsPerSecond = (double) NUMTRIALS / (double) msecTotal / 1000;
+    fprintf(stdout, "Performance = %6.2lf megaTrialsPerSecond\n", megaTrialsPerSecond);
+
+
+    // copy result from the device to the host:
+    cudaMemcpy( hhits, dhits, NUMTRIALS*sizeof(int), cudaMemcpyDeviceToHost );
+    CudaCheckError( );
+
+    // add up the hhits[ ] array: :
+    int totalHits = 0;
+    for (int i = 0; i < NUMTRIALS; i++ )
+    {
+        totalHits += hhits[i];
+    }
+
+    // compute and print the probability:
+
+    double probability = ( float ) totalHits / (float) NUMTRIALS;
+    fprintf(stdout, "Probability = %6.2lf\n", 100*probability);
+
+    // clean up host memory:
+    delete [ ] hvs;
+    delete [ ] hths;
+    delete [ ] hgs;
+    delete [ ] hhs;
+    delete [ ] hds;
+    delete [ ] hhits;
+
+    // clean up device memory:
+    cudaFree( dvs );
+    cudaFree( dths );
+    cudaFree( dgs );
+    cudaFree( dhs );
+    cudaFree( dds );
+    cudaFree( dhits );
+    CudaCheckError( );
 
 	return 0;
 }
