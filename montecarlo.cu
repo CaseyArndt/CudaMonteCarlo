@@ -15,14 +15,14 @@
 #include "exception.h"
 
 // setting the number of trials in the monte carlo simulation:
-//#ifndef NUMTRIALS
-//#define NUMTRIALS	2048
-//#endif
+#ifndef NUMTRIALS
+#define NUMTRIALS	2048
+#endif
 
 // setting the number of trials in the monte carlo simulation:
-//#ifndef BLOCKSIZE
-//#define BLOCKSIZE	32
-//#endif
+#ifndef BLOCKSIZE
+#define BLOCKSIZE	32
+#endif
 
 
 // ranges for the random numbers:
@@ -133,6 +133,7 @@ MonteCarlo( float *dvs, float *dths, float *dgs, float *dhs, float *dds, int *dh
 int
 main( int argc, char* argv[ ] )
 {
+    /*
     if ( argc < 3 )
     {
         fprintf(stdout, "Improper Argument Count. Run as ./montecarlo {BLOCKSIZE} {NUMTRIALS}\n");
@@ -141,6 +142,7 @@ main( int argc, char* argv[ ] )
     int BLOCKSIZE = argv[1];
     int NUMTRIALS = argv[2];
     int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
+    */
 
     TimeOfDaySeed( );
 
@@ -163,8 +165,6 @@ main( int argc, char* argv[ ] )
         hhs[n]  = Ranf(  HMIN,  HMAX );
         hds[n]  = Ranf(  DMIN,  DMAX );
     }
-
-
 
     // allocate device memory:
     float *dvs, *dths, *dgs, *dhs, *dds;
