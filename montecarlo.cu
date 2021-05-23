@@ -237,7 +237,7 @@ main( int argc, char* argv[ ] )
     // compute and print the probability:
 
     double probability = ( float ) totalHits / (float) NUMTRIALS;
-    fprintf(stdout, "BLOCKSIZE = %d, NUMTRIALS = %d, Performance = %6.2lf megaTrialsPerSecond, Probability = %6.2lf\n", BLOCKSIZE, NUMTRIALS, megaTrialsPerSecond, 100*probability);
+    fprintf(stdout, "%7.2lf", megaTrialsPerSecond);
 
     // clean up host memory:
     delete [ ] hvs;
