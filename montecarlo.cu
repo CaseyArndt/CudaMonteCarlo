@@ -133,15 +133,6 @@ MonteCarlo( float *dvs, float *dths, float *dgs, float *dhs, float *dds, int *dh
 int
 main( int argc, char* argv[ ] )
 {
-    /*
-    if ( argc < 3 )
-    {
-        fprintf(stdout, "Improper Argument Count. Run as ./montecarlo {BLOCKSIZE} {NUMTRIALS}\n");
-        exit(1);
-    }
-    int BLOCKSIZE = argv[1];
-    int NUMTRIALS = argv[2];
-    */
     int NUMBLOCKS = NUMTRIALS / BLOCKSIZE;
 
     TimeOfDaySeed( );
@@ -237,7 +228,7 @@ main( int argc, char* argv[ ] )
     // compute and print the probability:
 
     double probability = ( float ) totalHits / (float) NUMTRIALS;
-    fprintf(stdout, "%7.2lf", megaTrialsPerSecond);
+    fprintf(stdout, "BLOCKSIZE = %d, NUMTRIALS = %d, Performance = %6.2lf megaTrialsPerSecond, Probability = %6.2lf\n", BLOCKSIZE, NUMTRIALS, megaTrialsPerSecond, 100*probability);
 
     // clean up host memory:
     delete [ ] hvs;

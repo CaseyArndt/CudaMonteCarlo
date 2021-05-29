@@ -5,14 +5,11 @@
 #SBATCH --gres=gpu:1
 #SBATCH -o montecarlo.out
 #SBATCH -e montecarlo.err
-echo -e "1, 2, 4, 8, 16, 32, 64, 128\n"
 for i in 1 2 4 8 16 32 64 128
 do
     for j in 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576
     do
-    echo -n "$j, "
     /usr/local/apps/cuda/cuda-10.1/bin/nvcc -DBLOCKSIZE=$i -DNUMTRIALS=$j -o montecarlo montecarlo.cu
     ./montecarlo
     done
-    echo -e "\n"
 done
